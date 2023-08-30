@@ -6,7 +6,7 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'RGAPI-a72350da-e82c-45d0-9ee0-c6b4a8230acc';
+const API_KEY = process.env.RIOTAPI;
 let REGION = 'na1'; // e.g., na1, euw1, etc.
 let REGION2 = 'AMERICAS';
 
