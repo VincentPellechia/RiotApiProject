@@ -42,7 +42,11 @@ npm install
 
 Rename .env.example to .env and provide the necessary values.
 
+### Start Server and Client:
+npm start
+
 ### Start the server:
+cd server
 
 npm start
 
