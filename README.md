@@ -37,15 +37,19 @@ cd league-of-legends-stats-tracker
 ## Install dependencies:
 
 npm install
-Set up environment variables:
+
+### Set up environment variables:
+
 Rename .env.example to .env and provide the necessary values.
 
-Start the server:
+### Start the server:
 
 npm start
-Start the client:
+
+### Start the client:
 
 cd client
+
 npm start
 
 ## Usage
