@@ -48,7 +48,7 @@ Start the client:
 cd client
 npm start
 
-Usage
+## Usage
 Register or log in to your account.
 Connect your League of Legends summoner account.
 Explore your summoner profile, match history, and champion performance.
