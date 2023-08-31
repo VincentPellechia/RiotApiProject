@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import User from "./user.js";
+import User from "./components/user";
 import "./App.css";
 
 function App() {
