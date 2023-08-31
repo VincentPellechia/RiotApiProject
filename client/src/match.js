@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Participants from './participants.js';
 
 const Match = ({ userId, match }) => {
-    //console.log(match);
     const [expanded, setExpanded] = useState(false);
     const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -19,13 +18,13 @@ const Match = ({ userId, match }) => {
   return (
     player && (
     <div
-      key={match.matchId}
+      key={match.info.matchId}
       style={{ backgroundColor: player?.win ? 'green' : 'red' }}
       className="match"
       onClick={toggleExpanded}
     >
       <div className="match-summary">
-        <h4>Game Mode: {match.info.gameMode}</h4>
+        <h4>Game Mode: {match.metadata.gameMode}</h4>
         <h4>{player.kills}/{player.deaths}/{player.assists}</h4>
         <h4>Duration: {Math.floor(match.info.gameDuration/60) +" minutes " + (match.info.gameDuration - (Math.floor( match.info.gameDuration/ 60))*60) +" seconds"}</h4>
         {player && <h4>Champion: {player.championName}</h4>}

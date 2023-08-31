@@ -20,7 +20,6 @@ const Rank = ({ summonerId, region }) => {
               }
       
               const data = await response.json();
-              console.log(data.rankInfo);
               const soloRankData = data.rankInfo.find((rank) => rank.queueType === 'RANKED_SOLO_5x5');
               setRankData(soloRankData);
             }
