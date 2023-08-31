@@ -1,23 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import MatchList from './matchList.js';
-import Rank from './rank.js';
-import { useParams } from 'react-router-dom';
-import * as userService from '../services/user';
-
-const UserPage = () => {
-  const { region, userName } = useParams();
-
-  const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [matches, setMatches] = useState([]);
-  const [matchInfoList, setMatchInfoList] = useState([]);
-  const [loadingUser, setLoadingUser] = useState(true);
-  const [loadingMatches, setLoadingMatches] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoadingUser(true);
+export const getUser = async (region, userName) => {
+    try {
         const response = await fetch(`http://localhost:8000/getUser`, {
           method: 'POST',
           headers: {
@@ -31,19 +13,14 @@ const UserPage = () => {
         }
 
         const data = await response.json();
-        setUser(data.user);
-        setUserId(data.user.puuid);
+        return data;
       } catch (error) {
         console.error('Error fetching user data:', error);
-      } finally {
-        setLoadingUser(false);
       }
-    };
-
-    const fetchMatches = async () => {
-      try {
-        setLoadingMatches(true);
-        if (userId) {
+};
+  
+export const getMatches = async (region, userId) => {
+    try{
           const matchesResponse = await fetch(`http://localhost:8000/getMatches`, {
             method: 'POST',
             headers: {
@@ -57,23 +34,15 @@ const UserPage = () => {
           }
 
           const matchesData = await matchesResponse.json();
-          setMatches(matchesData.message);
-        }
+          return matchesData;
+        
       } catch (error) {
         console.error('Error fetching matches:', error);
-      } finally {
-        setLoadingMatches(false);
       }
-    };
-
-    //fetchUser();
-    //fetchMatches();
-  }, [region, userName, userId]);
-
-  useEffect(() => {
-    const fetchMatchInfo = async () => {
-      try {
-        setLoadingMatches(true);
+};
+  
+export const getMatchInfo = async (region, matches) => {
+    try {
         if (matches.length > 0) {
           const matchInfoData = await Promise.all(
             matches.map(async (match) => {
@@ -93,37 +62,8 @@ const UserPage = () => {
               return matchInfo.message;
             })
           );
-
-          setMatchInfoList(matchInfoData);
         }
       } catch (error) {
         console.error('Error fetching match info:', error);
-      } finally {
-        setLoadingMatches(false);
       }
-    };
-
-    fetchMatchInfo();
-  }, [matches, region]);
-
-  /*useEffect(() => {
-    if (user) {
-      console.log(user);
-    }
-  }, [user]);*/
-
-  return (
-    <div>
-      {loadingUser || loadingMatches ? (
-        <p>Loading...</p>
-      ) : (
-        <div>
-          {user && <Rank summonerId={user.id} region={region} />}
-          <MatchList userId={userId} matches={matchInfoList} loading={loadingMatches} />
-        </div>
-      )}
-    </div>
-  );
 };
-
-export default UserPage;
