@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import * as userService from '../services/user.js';
 
 const Rank = ({ summonerId, region }) => {
     
@@ -7,21 +8,8 @@ const Rank = ({ summonerId, region }) => {
     useEffect(() => {
         const fetchRank = async () => {
             try {
-              const response = await fetch(`http://localhost:8000/getRank`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ region, summonerId }), // Use destructuring here
-              });
-      
-              if (!response.ok) {
-                throw new Error('Failed to fetch user');
-              }
-      
-              const data = await response.json();
-              const soloRankData = data.rankInfo.find((rank) => rank.queueType === 'RANKED_SOLO_5x5');
-              setRankData(soloRankData);
+              const rankData = await userService.fetchRank(region, summonerId);
+              setRankData(rankData);
             }
             catch(error){
                 console.error('Error fetching rank data:', error);
