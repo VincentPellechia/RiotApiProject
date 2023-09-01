@@ -7,8 +7,8 @@ const MatchList = ({ userId, matches }) => {
     }
   return (
     <div className="match-list">
-      {matches.map((match) => (
-        match ? (<Match key={match.matchId} userId = {userId} match={match} />
+      {matches.map((match, index) => (
+        match ? (<Match key={index} userId = {userId} match={match} />
         ) : null))
         }
     </div>
