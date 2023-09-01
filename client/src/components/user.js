@@ -127,3 +127,81 @@ const UserPage = () => {
 };
 
 export default UserPage;
+
+
+
+/* In case chat gpt goes down this way a recommended way to build userPage
+
+import React, { useEffect, useState } from 'react';
+import MatchList from './MatchList';
+import Rank from './Rank';
+import { useParams } from 'react-router-dom';
+import * as userService from '../services/user';
+
+const UserPage = () => {
+  const { region, userName } = useParams();
+
+  const [user, setUser] = useState(null);
+  const [matches, setMatches] = useState([]);
+  const [matchInfoList, setMatchInfoList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMatchesManually = async () => {
+    try {
+      setLoading(true);
+
+      if (user && user.puuid) {
+        const matchesData = await userService.fetchUserMatches(region, user.puuid);
+        setMatches(matchesData.message);
+      }
+    } catch (error) {
+      console.error('Error fetching matches:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const userData = await userService.fetchUserData(region, userName);
+        setUser(userData.user);
+
+        if (userData.user.puuid) {
+          const matchesData = await userService.fetchUserMatches(region, userData.user.puuid);
+          setMatches(matchesData.message);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [region, userName]);
+
+  useEffect(() => {
+    // Similar logic for fetching match info
+  }, [matches, region]);
+
+  return (
+    <div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          <button onClick={fetchMatchesManually}>Fetch Matches</button>
+          {user && <Rank summonerId={user.id} region={region} />}
+          <MatchList userId={user?.puuid} matches={matchInfoList} loading={loading} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default UserPage;
+
+*/
