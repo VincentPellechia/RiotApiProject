@@ -318,6 +318,16 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config();
 
+const pool = require('./db');
+
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Error acquiring client', err.stack);
+  }
+  console.log('Connected to PostgreSQL!');
+  release();
+});
+
 app.use(cors());
 app.use(express.json());
 
