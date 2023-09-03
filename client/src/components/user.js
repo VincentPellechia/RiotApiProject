@@ -12,11 +12,12 @@ const UserPage = () => {
   const [matches, setMatches] = useState([]);
   const [matchInfoList, setMatchInfoList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMatches, setLoadingMatches] = useState(true);
 
   // Function to fetch matches manually
   const fetchMatchesManually = async () => {
     try {
-      setLoading(true);
+      setLoadingMatches(true);
       if (user && user.puuid) {
         const matchesData = await userService.fetchUserMatches(region, user.puuid);
         setMatches(matchesData.message);
@@ -24,13 +25,14 @@ const UserPage = () => {
     } catch (error) {
       console.error('Error fetching matches:', error);
     } finally {
-      setLoading(false);
+      setLoadingMatches(false);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(region + " " + userName);
         setLoading(true);
 
         // Fetch user data using the service
@@ -51,7 +53,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchMatchInfo = async () => {
       try {
-        setLoading(true);
+        setLoadingMatches(true);
         if (matches.length > 0) {
           const matchInfoData = await userService.fetchMatchInfo(region, matches);
           setMatchInfoList(matchInfoData);
@@ -59,7 +61,7 @@ const UserPage = () => {
       } catch (error) {
         console.error('Error fetching match info:', error);
       } finally {
-        setLoading(false);
+        setLoadingMatches(false);
       }
     };
 
@@ -76,9 +78,14 @@ const UserPage = () => {
         <p>Loading...</p>
       ) : (
         <div>
-          <button onClick={fetchMatchesManually}>Fetch Matches</button>
           {user && <Rank summonerId={user.id} region={region} />}
-          {matchInfoList && <MatchList userId={userId} matches={matchInfoList} loading={loading} />}
+          <button onClick={fetchMatchesManually}>Fetch Matches</button>
+          {loadingMatches ? (<p>Loading Matches ...</p>) : (
+            <div>
+              {matchInfoList && <MatchList userId={userId} matches={matchInfoList} loading={loading} />}
+            </div>
+          )}
+          
         </div>
       )}
     </div>

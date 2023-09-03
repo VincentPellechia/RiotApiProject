@@ -14,7 +14,6 @@ export const fetchUserData = async (region, userName) => {
 export const fetchUserMatches = async (region, userId) => {
   try {
     const response = await api.getMatches(region, userId);
-    console.log(response);
     return response;
     // Process and return user data
   } catch (error) {
@@ -44,7 +43,6 @@ export const fetchMatchInfo = async (region, matches) => {
 export const fetchRank = async (region, userId) => {
     try {
       const response = await api.fetchRank(region, userId);
-      console.log(response);
       return response;
       // Process and return user data
     } catch (error) {
