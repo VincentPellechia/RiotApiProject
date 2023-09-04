@@ -318,7 +318,7 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config();
 
-const pool = require('./db');
+const {pool} = require('./db');
 
 pool.connect((err, client, release) => {
   if (err) {
@@ -326,6 +326,13 @@ pool.connect((err, client, release) => {
   }
   console.log('Connected to PostgreSQL!');
   release();
+});
+
+process.on('SIGINT', () => {
+  pool.end().then(() => {
+    console.log('Database pool has been closed gracefully.');
+    process.exit(0);
+  });
 });
 
 app.use(cors());
