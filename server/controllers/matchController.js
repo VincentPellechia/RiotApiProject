@@ -1,5 +1,6 @@
 const getMostRecentMatches = require('../utils/getMostRecentMatches'); // Import your utility functions
 const getMatchData = require('../utils/getMatchData');
+const addMatchesToDatabase = require('../utils/addMatchesToDatabase');
 
 const getMatches = async (req, res) => {
   try {
@@ -25,10 +26,17 @@ const getMatchInfo = async (req, res) => {
     
         if(req.body.region === 'na1'){region = 'AMERICAS';}
   
-        const matchId = req.body.match;
+        const matchIds = req.body.matches;
+        const matchDataArray = [];
+
+      // Loop through each match ID and fetch match data
+      for (const matchId of matchIds) {
         const matchData = await getMatchData(matchId, region);
-        //await addMatchToDatabase(matchData);
-        res.json({message: matchData});
+        matchDataArray.push(matchData);
+      }
+
+      await addMatchesToDatabase(matchDataArray);
+      res.json({ message: matchDataArray });
     }
     catch(error){
       console.error('Error:', error);

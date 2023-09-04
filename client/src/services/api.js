@@ -40,18 +40,18 @@ export const getUser = async (region, userName) => {
     }
   };
   
-  export const getMatchInfo = async (region, match) => {
+  export const getMatchesInfo = async (region, matches) => {
     try {
       const matchResponse = await fetch(`http://localhost:8000/match/getMatchInfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ region, match }),
+        body: JSON.stringify({ region, matches }),
       });
   
       if (!matchResponse.ok) {
-        throw new Error(`Failed to fetch match info for matchId: ${match}`);
+        throw new Error(`Failed to fetch match info for matchId: ${matches}`);
       }
   
       const matchInfo = await matchResponse.json();

@@ -55,7 +55,7 @@ const UserPage = () => {
       try {
         setLoadingMatches(true);
         if (matches.length > 0) {
-          const matchInfoData = await userService.fetchMatchInfo(region, matches);
+          const matchInfoData = await userService.fetchMatchesInfo(region, matches);
           setMatchInfoList(matchInfoData);
         }
       } catch (error) {

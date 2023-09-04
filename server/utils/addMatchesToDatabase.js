@@ -1,26 +1,53 @@
-const MatchModel = require('../models/match'); // Replace with your actual Match model
-const pool = require('../db');
+const { pool } = require('../db');
 
 // Assuming that matchesData is an array of matches fetched from the Riot Games API
 const addMatchesToDatabase = async (matchesData) => {
-    try {
-      await pool.connect();
-  
-      for (const match of matchesData) {
-        const queryText = 'INSERT INTO matches (matchId, column1, column2) VALUES ($1, $2, $3) ON CONFLICT (matchId) DO NOTHING';
-        // Replace 'matches' with your actual table name and 'column1', 'column2' with your column names
-  
-        const values = [match.matchId, match.column1Value, match.column2Value];
-        // Replace with the actual values you want to insert
-  
-        await pool.query(queryText, values);
-      }
-    } catch (error) {
-      console.error('Error adding matches to the database:', error);
-      throw error;
-    } finally {
-      pool.end(); // Close the connection when done
+  let client; // Declare the client outside the try-catch block
+
+  try {
+    client = await pool.connect(); // Acquire a connection from the pool
+    
+    // Start a transaction
+    await client.query('BEGIN');
+
+    for (const match of matchesData) {
+      console.log('Adding match to the database:', match.metadata.matchId);
+      const timestamp = Math.floor(match.info.gameCreation / 1000);
+      const postgresTimestamp = new Date(timestamp * 1000).toISOString();
+
+      const queryText = `
+        INSERT INTO matches (match_id, match_date, match_duration, match_mode, match_type)
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (match_id) DO NOTHING
+      `;
+
+      const values = [
+        match.metadata.matchId,
+        postgresTimestamp,
+        match.info.gameDuration,
+        match.info.gameMode,
+        match.info.gameType,
+      ];
+
+      // Execute the insert query for each match
+      await client.query(queryText, values);
+      console.log('Match added:', match.metadata.matchId);
     }
-  };
-  
-  module.exports = addMatchesToDatabase;
+
+    // Commit the transaction
+    await client.query('COMMIT');
+  } catch (error) {
+    // If there's an error, rollback the transaction
+    if (client) {
+      await client.query('ROLLBACK');
+    }
+    console.error('Error adding matches to the database:', error);
+    throw error;
+  } finally {
+    if (client) {
+      client.release(); // Release the connection back to the pool
+    }
+  }
+};
+
+module.exports = addMatchesToDatabase;
