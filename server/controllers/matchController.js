@@ -2,6 +2,8 @@ const getMostRecentMatches = require('../utils/getMostRecentMatches'); // Import
 const getMatchData = require('../utils/getMatchData');
 const addMatchesToDatabase = require('../utils/addMatchesToDatabase');
 
+//TODO rename getMatches and getMatchInfo to getMatchesFromAPI and getMatchInfoFromAPI respectfully
+
 const getMatches = async (req, res) => {
   try {
     let region;
@@ -36,6 +38,8 @@ const getMatchInfo = async (req, res) => {
       }
 
       await addMatchesToDatabase(matchDataArray);
+      //await addParticipantsToDatabase(matchDataArray); todo
+      //await addParticipantStatsToDatabase(matchDataArray); todo
       res.json({ message: matchDataArray });
     }
     catch(error){
@@ -43,6 +47,44 @@ const getMatchInfo = async (req, res) => {
       res.status(500).json({ error: 'An error occurred' });
     }
 }
+
+//TODO
+const getMatchesFromDatabase = async (req,res) =>{
+  try{
+    pool.query(`
+    SELECT * from matches left join participants on participants.match_id = match.match_id
+    where participants.summoner_name = ${summonerName}
+    `, (err, result) => {
+      if (err) {
+        return console.error('Error executing query', err.stack);
+      }
+      console.log('Query result:', result.rows);
+    });
+  }
+  catch(error){
+    console.error('Error:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
+//TODO
+const getMatchInfoFromDatabase = async (req,res) =>{
+  try{
+    pool.query(`
+    SELECT * from participant_stats left join participants on participants.participant_id = participant_stats.participant_id
+    where participants.match_id = ${matchId}
+    `, (err, result) => {
+      if (err) {
+        return console.error('Error executing query', err.stack);
+      }
+      console.log('Query result:', result.rows);
+    });
+  }
+  catch(error){
+    console.error('Error:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};
 
 // Define other match controllers here
 
