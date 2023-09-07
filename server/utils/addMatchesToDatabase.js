@@ -1,4 +1,4 @@
-const { pool } = require('../db');
+const { pool } = require("../db");
 
 // Assuming that matchesData is an array of matches fetched from the Riot Games API
 const addMatchesToDatabase = async (matchesData) => {
@@ -6,12 +6,11 @@ const addMatchesToDatabase = async (matchesData) => {
 
   try {
     client = await pool.connect(); // Acquire a connection from the pool
-    
+
     // Start a transaction
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     for (const match of matchesData) {
-      console.log('Adding match to the database:', match.metadata.matchId);
       const timestamp = Math.floor(match.info.gameCreation / 1000);
       const postgresTimestamp = new Date(timestamp * 1000).toISOString();
 
@@ -31,17 +30,16 @@ const addMatchesToDatabase = async (matchesData) => {
 
       // Execute the insert query for each match
       await client.query(queryText, values);
-      console.log('Match added:', match.metadata.matchId);
     }
 
     // Commit the transaction
-    await client.query('COMMIT');
+    await client.query("COMMIT");
   } catch (error) {
     // If there's an error, rollback the transaction
     if (client) {
-      await client.query('ROLLBACK');
+      await client.query("ROLLBACK");
     }
-    console.error('Error adding matches to the database:', error);
+    console.error("Error adding matches to the database:", error);
     throw error;
   } finally {
     if (client) {
