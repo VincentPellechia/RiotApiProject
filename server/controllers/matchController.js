@@ -2,6 +2,7 @@ const getMostRecentMatches = require("../utils/getMostRecentMatches"); // Import
 const getMatchData = require("../utils/getMatchData");
 const addMatchesToDatabase = require("../utils/addMatchesToDatabase");
 const addParticipantsToDatabase = require("../utils/addParticipantsToDatabase");
+const getMatchesFromDatabaseUtil = require("../utils/getMatchesFromDatabase");
 
 //TODO rename getMatches and getMatchInfo to getMatchesFromAPI and getMatchInfoFromAPI respectfully
 
@@ -57,19 +58,14 @@ const getMatchesInfoFromAPI = async (req, res) => {
 };
 
 //TODO
-const getMatchesFromDatabase = async (summonerName) => {
+const getMatchesFromDatabase = async (req, res) => {
   try {
-    const result = await pool.query(
-      `
-        SELECT matches.match_id
-        FROM matches
-        INNER JOIN participants ON participants.match_id = matches.match_id
-        INNER JOIN participant_stats ON participants.participant_id = participant_stats.participant_id
-        WHERE participants.summoner_name = $1
-        `,
-      [summonerName] // Use parameterized query to prevent SQL injection
-    );
-    return result.rows;
+    const userId = req.body.userId;
+    const region = req.body.region;
+
+    const recentGames = await getMatchesFromDatabaseUtil(userId, region);
+
+    res.json({ message: recentGames });
   } catch (err) {
     console.error("Error executing query", err.stack);
     throw err;
@@ -79,16 +75,14 @@ const getMatchesFromDatabase = async (summonerName) => {
 //TODO
 const getMatchesInfoFromDatabase = async (matchId) => {
   try {
-    const result = await pool.query(
-      `
-        SELECT *
-        FROM participant_stats
-        INNER JOIN participants ON participants.participants_id = participant_stats.participant_id
-        WHERE participants.match_id = $1
-        `,
-      [matchId] // Use parameterized query to prevent SQL injection
-    );
-    return result.rows;
+    const matchIds = req.body.matches;
+    const matchDataArray = [];
+
+    // Loop through each match ID and fetch match data
+    for (const matchId of matchIds) {
+      const matchData = await getMatchDataFromDatabase(matchId, region);
+      matchDataArray.push(matchData);
+    }
   } catch (err) {
     console.error("Error executing query", err.stack);
     throw err;

@@ -34,6 +34,17 @@ export const fetchMatchesInfoFromAPI = async (region, matches) => {
   }
 };
 
+export const fetchUserMatchesFromDatabase = async (region, userName) => {
+  try {
+    const response = await api.getMatchesFromDatabase(region, userName);
+    return response;
+    // Process and return user data
+  } catch (error) {
+    console.error("Error fetching user matches:", error);
+    throw error;
+  }
+};
+
 export const fetchMatchesInfoFromDatabase = async (region, matches) => {
   try {
     if (matches.length > 0) {

@@ -67,6 +67,30 @@ export const getMatchesInfoFromAPI = async (region, matches) => {
   }
 };
 
+export const getMatchesFromDatabase = async (region, userId) => {
+  try {
+    const matchesResponse = await fetch(
+      `http://localhost:8000/match/getMatchesFromDatabase`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ region, userId }),
+      }
+    );
+
+    if (!matchesResponse.ok) {
+      throw new Error("Failed to fetch user matches");
+    }
+
+    const matchesData = await matchesResponse.json();
+    return matchesData;
+  } catch (error) {
+    console.error("Error fetching matches:", error);
+  }
+};
+
 export const getMatchesInfoFromDatabase = async (region, matches) => {
   try {
     const matchResponse = await fetch(
