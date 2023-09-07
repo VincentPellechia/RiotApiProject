@@ -1,4 +1,4 @@
-import * as api from './api';
+import * as api from "./api";
 
 export const fetchUserData = async (region, userName) => {
   try {
@@ -6,41 +6,56 @@ export const fetchUserData = async (region, userName) => {
     return response;
     // Process and return user data
   } catch (error) {
-    console.error('Error fetching user data:', error);
+    console.error("Error fetching user data:", error);
     throw error;
   }
 };
 
-export const fetchUserMatches = async (region, userId) => {
+export const fetchUserMatchesFromAPI = async (region, userId) => {
   try {
-    const response = await api.getMatches(region, userId);
+    const response = await api.getMatchesFromAPI(region, userId);
     return response;
     // Process and return user data
   } catch (error) {
-    console.error('Error fetching user matches:', error);
+    console.error("Error fetching user matches:", error);
     throw error;
   }
 };
 
-export const fetchMatchesInfo = async (region, matches) => {
+export const fetchMatchesInfoFromAPI = async (region, matches) => {
   try {
     if (matches.length > 0) {
-      const matchInfoData = await api.getMatchesInfo(region, matches);
+      const matchInfoData = await api.getMatchesInfoFromAPI(region, matches);
       return matchInfoData;
     }
   } catch (error) {
-    console.error('Error fetching match info:', error);
+    console.error("Error fetching match info:", error);
+    throw error;
+  }
+};
+
+export const fetchMatchesInfoFromDatabase = async (region, matches) => {
+  try {
+    if (matches.length > 0) {
+      const matchInfoData = await api.getMatchesInfoFromDatabase(
+        region,
+        matches
+      );
+      return matchInfoData;
+    }
+  } catch (error) {
+    console.error("Error fetching match info:", error);
     throw error;
   }
 };
 
 export const fetchRank = async (region, userId) => {
-    try {
-      const response = await api.fetchRank(region, userId);
-      return response;
-      // Process and return user data
-    } catch (error) {
-      console.error('Error fetching user matches:', error);
-      throw error;
-    }
-  };
+  try {
+    const response = await api.fetchRank(region, userId);
+    return response;
+    // Process and return user data
+  } catch (error) {
+    console.error("Error fetching user matches:", error);
+    throw error;
+  }
+};

@@ -14,7 +14,6 @@
 //   res.json({ message: "Hello from server!" });
 // });
 
-
 // //League of Legends API in use
 
 // app.post('/getUser', async (req, res) => {
@@ -206,7 +205,7 @@
 //       })));
 
 //     // SQL query to insert the match data into the matches table
-//     const query = `INSERT INTO matches (matchId, region, gameMode, gameDuration, timestamp, winner, participants) 
+//     const query = `INSERT INTO matches (matchId, region, gameMode, gameDuration, timestamp, winner, participants)
 //                    VALUES ($1, $2, $3, $4, $5, $6, $7)`;
 
 //     // Data to be inserted
@@ -243,7 +242,7 @@
 //       } = participant;
 
 //       // SQL query to insert participant data into participants table
-//       const queryParticipant = `INSERT INTO participants (matchid, playerid, champion, role, lane) 
+//       const queryParticipant = `INSERT INTO participants (matchid, playerid, champion, role, lane)
 //                                 VALUES ($1, $2, $3, $4, $5)
 //                                 RETURNING participantId`;
 
@@ -295,42 +294,28 @@
 //   }
 // }
 
-// // pool.query(`
-// // SELECT Count(*) as total_matches,
-// // Sum(case when win = true then 1 else 0 end) as total_wins,
-// // Sum(case when win = false then 1 else 0 end) as total_losses,
-// // (CAST(SUM(CASE WHEN win = true THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100 AS win_rate
-// // from participant_stats inner join participants on participants.participantid = participant_stats.participantid
-// // where participants.playerid = 'Mazee'
-// // `, (err, result) => {
-// //   if (err) {
-// //     return console.error('Error executing query', err.stack);
-// //   }
-// //   console.log('Query result:', result.rows);
-// // });
-
 // app.listen(8000, () => {
 //   console.log(`Server is running on port 8000.`);
 // });
 
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const app = express();
-require('dotenv').config();
+require("dotenv").config();
 
-const {pool} = require('./db');
+const { pool } = require("./db");
 
 pool.connect((err, client, release) => {
   if (err) {
-    return console.error('Error acquiring client', err.stack);
+    return console.error("Error acquiring client", err.stack);
   }
-  console.log('Connected to PostgreSQL!');
+  console.log("Connected to PostgreSQL!");
   release();
 });
 
-process.on('SIGINT', () => {
+process.on("SIGINT", () => {
   pool.end().then(() => {
-    console.log('Database pool has been closed gracefully.');
+    console.log("Database pool has been closed gracefully.");
     process.exit(0);
   });
 });
@@ -339,15 +324,58 @@ app.use(cors());
 app.use(express.json());
 
 // Import route modules
-const userRoutes = require('./routes/userRoutes');
-const matchRoutes = require('./routes/matchRoutes');
+const userRoutes = require("./routes/userRoutes");
+const matchRoutes = require("./routes/matchRoutes");
 
 // Use route modules as middleware
-app.use('/user', userRoutes);
-app.use('/match', matchRoutes);
-
+app.use("/user", userRoutes);
+app.use("/match", matchRoutes);
 
 // ... Other configurations and setup ...
+
+pool.query(
+  `
+SELECT Count(*) as total_matches,
+Sum(case when win = true then 1 else 0 end) as total_wins,
+Sum(case when win = false then 1 else 0 end) as total_losses,
+(CAST(SUM(CASE WHEN win = true THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100 AS win_rate
+from participant_stats 
+inner join participants on participants.participant_id = participant_stats.participant_id
+inner join matches on participants.match_id = matches.match_id
+where participants.summoner_name = 'Mazee'
+and matches.match_mode = 'CLASSIC'
+`,
+  (err, result) => {
+    if (err) {
+      return console.error("Error executing query", err.stack);
+    }
+    console.log("Query result:", result.rows);
+  }
+);
+
+async function fetchMatches() {
+  try {
+    const result = await pool.query(
+      `
+      SELECT matches.match_id from matches
+      inner join participants on participants.match_id = matches.match_id
+      inner join participant_stats on participants.participant_id = participant_stats.participant_id
+      where participants.summoner_name = 'Mazee'
+      `
+    );
+    return result.rows;
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+  }
+}
+
+fetchMatches()
+  .then((matches) => {
+    console.log("Matches:", matches);
+  })
+  .catch((err) => {
+    console.error("Error:", err);
+  }); // Call the async function to fetch matches
 
 app.listen(8000, () => {
   console.log(`Server is running on port 8000.`);

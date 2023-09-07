@@ -5,7 +5,7 @@ const addParticipantsToDatabase = require("../utils/addParticipantsToDatabase");
 
 //TODO rename getMatches and getMatchInfo to getMatchesFromAPI and getMatchInfoFromAPI respectfully
 
-const getMatches = async (req, res) => {
+const getMatchesFromAPI = async (req, res) => {
   try {
     let region;
     if (req.body.region === "euw1" || req.body.region === "eun1") {
@@ -26,7 +26,7 @@ const getMatches = async (req, res) => {
   }
 };
 
-const getMatchInfo = async (req, res) => {
+const getMatchesInfoFromAPI = async (req, res) => {
   try {
     let region;
     if (req.body.region === "euw1" || req.body.region === "eun1") {
@@ -57,51 +57,50 @@ const getMatchInfo = async (req, res) => {
 };
 
 //TODO
-const getMatchesFromDatabase = async (req, res) => {
+const getMatchesFromDatabase = async (summonerName) => {
   try {
-    pool.query(
+    const result = await pool.query(
       `
-    SELECT * from matches left join participants on participants.match_id = match.match_id
-    where participants.summoner_name = ${summonerName}
-    `,
-      (err, result) => {
-        if (err) {
-          return console.error("Error executing query", err.stack);
-        }
-        console.log("Query result:", result.rows);
-      }
+        SELECT matches.match_id
+        FROM matches
+        INNER JOIN participants ON participants.match_id = matches.match_id
+        INNER JOIN participant_stats ON participants.participant_id = participant_stats.participant_id
+        WHERE participants.summoner_name = $1
+        `,
+      [summonerName] // Use parameterized query to prevent SQL injection
     );
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "An error occurred" });
+    return result.rows;
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+    throw err;
   }
 };
 
 //TODO
-const getMatchInfoFromDatabase = async (req, res) => {
+const getMatchesInfoFromDatabase = async (matchId) => {
   try {
-    pool.query(
+    const result = await pool.query(
       `
-    SELECT * from participant_stats left join participants on participants.participant_id = participant_stats.participant_id
-    where participants.match_id = ${matchId}
-    `,
-      (err, result) => {
-        if (err) {
-          return console.error("Error executing query", err.stack);
-        }
-        console.log("Query result:", result.rows);
-      }
+        SELECT *
+        FROM participant_stats
+        INNER JOIN participants ON participants.participants_id = participant_stats.participant_id
+        WHERE participants.match_id = $1
+        `,
+      [matchId] // Use parameterized query to prevent SQL injection
     );
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "An error occurred" });
+    return result.rows;
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+    throw err;
   }
 };
 
 // Define other match controllers here
 
 module.exports = {
-  getMatches,
-  getMatchInfo,
+  getMatchesFromAPI,
+  getMatchesInfoFromAPI,
+  getMatchesFromDatabase,
+  getMatchesInfoFromDatabase,
   // Export other match controllers here
 };
