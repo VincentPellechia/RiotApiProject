@@ -47,8 +47,8 @@ const getMatchesInfoFromAPI = async (req, res) => {
       matchDataArray.push(matchData);
     }
 
-    await addMatchesToDatabase(matchDataArray);
-    await addParticipantsToDatabase(matchDataArray);
+    const newMatchArr = await addMatchesToDatabase(matchDataArray);
+    await addParticipantsToDatabase(matchDataArray, newMatchArr);
 
     res.json({ message: matchDataArray });
   } catch (error) {

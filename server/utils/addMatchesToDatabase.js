@@ -3,6 +3,7 @@ const { pool } = require("../db");
 // Assuming that matchesData is an array of matches fetched from the Riot Games API
 const addMatchesToDatabase = async (matchesData) => {
   let client; // Declare the client outside the try-catch block
+  let newMatchArr = [];
 
   try {
     client = await pool.connect(); // Acquire a connection from the pool
@@ -18,6 +19,7 @@ const addMatchesToDatabase = async (matchesData) => {
         INSERT INTO matches (match_id, match_date, match_duration, match_mode, match_type, match_region)
         VALUES ($1, $2, $3, $4, $5, $6)
         ON CONFLICT (match_id) DO NOTHING
+        returning match_id;
       `;
 
       const values = [
@@ -30,7 +32,9 @@ const addMatchesToDatabase = async (matchesData) => {
       ];
 
       // Execute the insert query for each match
-      await client.query(queryText, values);
+      const res = await client.query(queryText, values);
+
+      if (res.rows[0]?.match_id) newMatchArr.push(res.rows[0]?.match_id);
     }
 
     // Commit the transaction
@@ -45,6 +49,7 @@ const addMatchesToDatabase = async (matchesData) => {
   } finally {
     if (client) {
       client.release(); // Release the connection back to the pool
+      return newMatchArr;
     }
   }
 };

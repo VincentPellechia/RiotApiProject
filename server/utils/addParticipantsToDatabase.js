@@ -1,7 +1,7 @@
 const { pool } = require("../db");
 const addParticipantStatsToDatabase = require("../utils/addParticipantStatsToDatabase");
 
-const addParticipantsToDatabase = async (matchesData) => {
+const addParticipantsToDatabase = async (matchesData, newMatchArr) => {
   let client; // Declare the client outside the try-catch block
 
   try {
@@ -11,9 +11,11 @@ const addParticipantsToDatabase = async (matchesData) => {
 
     for (const match of matchesData) {
       const matchId = match.metadata.matchId;
+      if (!newMatchArr.includes(matchId)) {
+        continue;
+      }
       for (const participant of match.info.participants) {
         // Destructure participant data
-
         const {
           summonerName,
           puuid,
@@ -70,11 +72,13 @@ const addParticipantsToDatabase = async (matchesData) => {
         };
 
         // Pass participantId to addParticipantStatsToDatabase along with relevant stats data
-        await addParticipantStatsToDatabase(client, participantId, statsData);
+        if (participantId) {
+          await addParticipantStatsToDatabase(client, participantId, statsData);
+        }
       }
     }
     // Commit the transaction
-    await client.query("COMMIT");
+    //await client.query("COMMIT");
   } catch (error) {
     // If there's an error, rollback the transaction
     if (client) {
