@@ -3,6 +3,7 @@ import MatchList from "./matchList.js";
 import Rank from "./rank.js";
 import { useParams } from "react-router-dom";
 import * as userService from "../services/user.js";
+import * as matchesService from "../services/matches.js";
 
 const UserPage = () => {
   const { region, userName } = useParams();
@@ -19,10 +20,18 @@ const UserPage = () => {
     try {
       setLoadingMatches(true);
       if (user && user.puuid) {
-        const matchesData = await userService.fetchUserMatchesFromAPI(
+        const matchesData = await matchesService.fetchUserMatchesFromAPI(
           region,
           user.puuid
         );
+
+        const matchesDataFromDatabase =
+          await matchesService.fetchUserMatchesFromDatabase(region, user.puuid);
+        console.log(
+          "🚀 ~ file: user.js:31 ~ fetchMatchesManually ~ matchesDataFromDatabase:",
+          matchesDataFromDatabase
+        );
+
         setMatches(matchesData.message);
       }
     } catch (error) {
@@ -56,7 +65,7 @@ const UserPage = () => {
       try {
         setLoadingMatches(true);
         if (matches.length > 0) {
-          const matchInfoData = await userService.fetchMatchesInfoFromAPI(
+          const matchInfoData = await matchesService.fetchMatchesInfoFromAPI(
             region,
             matches
           );
