@@ -78,7 +78,7 @@ const addParticipantsToDatabase = async (matchesData, newMatchArr) => {
       }
     }
     // Commit the transaction
-    //await client.query("COMMIT");
+    await client.query("COMMIT");
   } catch (error) {
     // If there's an error, rollback the transaction
     if (client) {
