@@ -2,10 +2,12 @@ const getMostRecentMatches = require("../utils/getMostRecentMatches"); // Import
 const getMatchData = require("../utils/getMatchData");
 const addMatchesToDatabase = require("../utils/addMatchesToDatabase");
 const addParticipantsToDatabase = require("../utils/addParticipantsToDatabase");
+const getMatchesFromDatabaseUtil = require("../utils/getMatchesFromDatabase");
+const getMatchesInfoFromDatabaseUtil = require("../utils/getMatchesInfoFromDatabase");
 
 //TODO rename getMatches and getMatchInfo to getMatchesFromAPI and getMatchInfoFromAPI respectfully
 
-const getMatches = async (req, res) => {
+const getMatchesFromAPI = async (req, res) => {
   try {
     let region;
     if (req.body.region === "euw1" || req.body.region === "eun1") {
@@ -26,7 +28,7 @@ const getMatches = async (req, res) => {
   }
 };
 
-const getMatchInfo = async (req, res) => {
+const getMatchesInfoFromAPI = async (req, res) => {
   try {
     let region;
     if (req.body.region === "euw1" || req.body.region === "eun1") {
@@ -46,8 +48,8 @@ const getMatchInfo = async (req, res) => {
       matchDataArray.push(matchData);
     }
 
-    await addMatchesToDatabase(matchDataArray);
-    await addParticipantsToDatabase(matchDataArray);
+    const newMatchArr = await addMatchesToDatabase(matchDataArray);
+    await addParticipantsToDatabase(matchDataArray, newMatchArr);
 
     res.json({ message: matchDataArray });
   } catch (error) {
@@ -59,49 +61,45 @@ const getMatchInfo = async (req, res) => {
 //TODO
 const getMatchesFromDatabase = async (req, res) => {
   try {
-    pool.query(
-      `
-    SELECT * from matches left join participants on participants.match_id = match.match_id
-    where participants.summoner_name = ${summonerName}
-    `,
-      (err, result) => {
-        if (err) {
-          return console.error("Error executing query", err.stack);
-        }
-        console.log("Query result:", result.rows);
-      }
-    );
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "An error occurred" });
+    const userId = req.body.userId;
+    const region = req.body.region;
+
+    const recentGames = await getMatchesFromDatabaseUtil(userId, region);
+
+    res.json({ message: recentGames });
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+    throw err;
   }
 };
 
 //TODO
-const getMatchInfoFromDatabase = async (req, res) => {
+const getMatchesInfoFromDatabase = async (req, res) => {
   try {
-    pool.query(
-      `
-    SELECT * from participant_stats left join participants on participants.participant_id = participant_stats.participant_id
-    where participants.match_id = ${matchId}
-    `,
-      (err, result) => {
-        if (err) {
-          return console.error("Error executing query", err.stack);
-        }
-        console.log("Query result:", result.rows);
-      }
-    );
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "An error occurred" });
+    const matchIds = req.body.matches;
+    const region = req.body.region;
+
+    const matchDataArray = [];
+
+    // Loop through each match ID and fetch match data
+    for (const matchId of matchIds) {
+      const matchData = await getMatchesInfoFromDatabaseUtil(matchId, region);
+      matchDataArray.push(matchData);
+    }
+
+    res.json({ message: matchDataArray });
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+    throw err;
   }
 };
 
 // Define other match controllers here
 
 module.exports = {
-  getMatches,
-  getMatchInfo,
+  getMatchesFromAPI,
+  getMatchesInfoFromAPI,
+  getMatchesFromDatabase,
+  getMatchesInfoFromDatabase,
   // Export other match controllers here
 };

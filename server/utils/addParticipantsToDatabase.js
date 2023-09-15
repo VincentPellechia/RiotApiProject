@@ -1,7 +1,7 @@
 const { pool } = require("../db");
 const addParticipantStatsToDatabase = require("../utils/addParticipantStatsToDatabase");
 
-const addParticipantsToDatabase = async (matchesData) => {
+const addParticipantsToDatabase = async (matchesData, newMatchArr) => {
   let client; // Declare the client outside the try-catch block
 
   try {
@@ -11,11 +11,14 @@ const addParticipantsToDatabase = async (matchesData) => {
 
     for (const match of matchesData) {
       const matchId = match.metadata.matchId;
+      if (!newMatchArr.includes(matchId)) {
+        continue;
+      }
       for (const participant of match.info.participants) {
         // Destructure participant data
         const {
           summonerName,
-          summonerId,
+          puuid,
           teamId,
           championId,
           championName,
@@ -23,14 +26,14 @@ const addParticipantsToDatabase = async (matchesData) => {
         } = participant;
 
         // SQL query to insert participant data into participants table
-        const queryText = `INSERT INTO participants (match_id, summoner_id, summoner_name, champion_name, champion_id, team_id) 
+        const queryText = `INSERT INTO participants (match_id, puuid, summoner_name, champion_name, champion_id, team_id) 
                             VALUES ($1, $2, $3, $4, $5, $6)
                             RETURNING participant_id`; // Return the participant_id
 
         // Data to be inserted for participants
         const values = [
           matchId,
-          summonerId,
+          puuid,
           summonerName,
           championName,
           championId,
@@ -69,7 +72,9 @@ const addParticipantsToDatabase = async (matchesData) => {
         };
 
         // Pass participantId to addParticipantStatsToDatabase along with relevant stats data
-        await addParticipantStatsToDatabase(client, participantId, statsData);
+        if (participantId) {
+          await addParticipantStatsToDatabase(client, participantId, statsData);
+        }
       }
     }
     // Commit the transaction
