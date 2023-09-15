@@ -1,4 +1,4 @@
-import * as api from "./api";
+import * as api from "../utils/api";
 
 export const fetchUserMatchesFromAPI = async (region, userId) => {
   try {
@@ -41,6 +41,7 @@ export const fetchMatchesInfoFromDatabase = async (region, matches) => {
         region,
         matches
       );
+
       return matchInfoData;
     }
   } catch (error) {

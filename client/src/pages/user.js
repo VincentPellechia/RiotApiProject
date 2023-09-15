@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import MatchList from "./matchList.js";
-import Rank from "./rank.js";
+import React, { useCallback, useEffect, useState } from "react";
+import MatchList from "../components/matchList";
+import Rank from "../components/rank";
 import { useParams } from "react-router-dom";
 import * as userService from "../services/user.js";
 import * as matchesService from "../services/matches.js";
@@ -15,7 +15,7 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMatches, setLoadingMatches] = useState(true);
 
-  // Function to fetch matches manually
+  // Function to fetch matches from the database
   const fetchMatchesManually = async () => {
     try {
       setLoadingMatches(true);
@@ -24,15 +24,12 @@ const UserPage = () => {
           region,
           user.puuid
         );
-
-        const matchesDataFromDatabase =
-          await matchesService.fetchUserMatchesFromDatabase(region, user.puuid);
-        console.log(
-          "🚀 ~ file: user.js:31 ~ fetchMatchesManually ~ matchesDataFromDatabase:",
-          matchesDataFromDatabase
-        );
-
-        setMatches(matchesData.message);
+        if (matchesData.message.length > 0) {
+          await matchesService.fetchMatchesInfoFromAPI(
+            region,
+            matchesData.message
+          );
+        }
       }
     } catch (error) {
       console.error("Error fetching matches:", error);
@@ -50,9 +47,10 @@ const UserPage = () => {
         const userData = await userService.fetchUserData(region, userName);
         setUser(userData.user);
         setUserId(userData.user.puuid);
+
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user data:", error);
-      } finally {
         setLoading(false);
       }
     };
@@ -61,29 +59,32 @@ const UserPage = () => {
   }, [region, userName]);
 
   useEffect(() => {
-    const fetchMatchInfo = async () => {
+    // Check if there are matches in the database
+    const fetchMatchesFromDatabase = async () => {
       try {
         setLoadingMatches(true);
-        if (matches.length > 0) {
-          const matchInfoData = await matchesService.fetchMatchesInfoFromAPI(
+        const matchesDataFromDatabase =
+          await matchesService.fetchUserMatchesFromDatabase(region, user.puuid);
+        const matchIdStrings = matchesDataFromDatabase.message.map(
+          (item) => item.match_id
+        );
+        const matchesInfoFromDatabase =
+          await matchesService.fetchMatchesInfoFromDatabase(
             region,
-            matches
+            matchesDataFromDatabase.message
           );
-          setMatchInfoList(matchInfoData);
-        }
-      } catch (error) {
-        console.error("Error fetching match info:", error);
-      } finally {
+        setMatches(matchIdStrings);
+        setMatchInfoList(matchesInfoFromDatabase);
         setLoadingMatches(false);
+      } catch (error) {
+        console.error("Error fetching matches from the database:", error);
       }
     };
 
-    fetchMatchInfo();
-  }, [matches, region]);
-
-  // useEffect(()=> {
-  //   console.log(matchInfoList);
-  // }, [matchInfoList]);
+    if (user && user.puuid) {
+      fetchMatchesFromDatabase(); // Call this directly when user data is available
+    }
+  }, [region, user]);
 
   return (
     <div>
@@ -96,7 +97,7 @@ const UserPage = () => {
           {loadingMatches ? (
             <p>Loading Matches ...</p>
           ) : (
-            <div>
+            <React.Fragment>
               {matchInfoList && (
                 <MatchList
                   userId={userId}
@@ -104,7 +105,7 @@ const UserPage = () => {
                   loading={loading}
                 />
               )}
-            </div>
+            </React.Fragment>
           )}
         </div>
       )}

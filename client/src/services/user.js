@@ -1,4 +1,4 @@
-import * as api from "./api";
+import * as api from "../utils/api";
 
 export const fetchUserData = async (region, userName) => {
   try {
