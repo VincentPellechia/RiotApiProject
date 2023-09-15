@@ -353,29 +353,29 @@ and matches.match_mode = 'CLASSIC'
   }
 );
 
-async function fetchMatches() {
-  try {
-    const result = await pool.query(
-      `
-      SELECT matches.match_id from matches
-      inner join participants on participants.match_id = matches.match_id
-      inner join participant_stats on participants.participant_id = participant_stats.participant_id
-      where participants.summoner_name = 'Mazee'
-      `
-    );
-    return result.rows;
-  } catch (err) {
-    console.error("Error executing query", err.stack);
-  }
-}
+// async function fetchMatches() {
+//   try {
+//     const result = await pool.query(
+//       `
+//       SELECT matches.match_id from matches
+//       inner join participants on participants.match_id = matches.match_id
+//       inner join participant_stats on participants.participant_id = participant_stats.participant_id
+//       where participants.summoner_name = 'Mazee'
+//       `
+//     );
+//     return result.rows;
+//   } catch (err) {
+//     console.error("Error executing query", err.stack);
+//   }
+// }
 
-fetchMatches()
-  .then((matches) => {
-    console.log("Matches:", matches);
-  })
-  .catch((err) => {
-    console.error("Error:", err);
-  }); // Call the async function to fetch matches
+// fetchMatches()
+//   .then((matches) => {
+//     console.log("Matches:", matches);
+//   })
+//   .catch((err) => {
+//     console.error("Error:", err);
+//   }); // Call the async function to fetch matches
 
 app.listen(8000, () => {
   console.log(`Server is running on port 8000.`);

@@ -3,6 +3,7 @@ const getMatchData = require("../utils/getMatchData");
 const addMatchesToDatabase = require("../utils/addMatchesToDatabase");
 const addParticipantsToDatabase = require("../utils/addParticipantsToDatabase");
 const getMatchesFromDatabaseUtil = require("../utils/getMatchesFromDatabase");
+const getMatchesInfoFromDatabaseUtil = require("../utils/getMatchesInfoFromDatabase");
 
 //TODO rename getMatches and getMatchInfo to getMatchesFromAPI and getMatchInfoFromAPI respectfully
 
@@ -73,16 +74,20 @@ const getMatchesFromDatabase = async (req, res) => {
 };
 
 //TODO
-const getMatchesInfoFromDatabase = async (matchId) => {
+const getMatchesInfoFromDatabase = async (req, res) => {
   try {
     const matchIds = req.body.matches;
+    const region = req.body.region;
+
     const matchDataArray = [];
 
     // Loop through each match ID and fetch match data
     for (const matchId of matchIds) {
-      const matchData = await getMatchDataFromDatabase(matchId, region);
+      const matchData = await getMatchesInfoFromDatabaseUtil(matchId, region);
       matchDataArray.push(matchData);
     }
+
+    res.json({ message: matchDataArray });
   } catch (err) {
     console.error("Error executing query", err.stack);
     throw err;
