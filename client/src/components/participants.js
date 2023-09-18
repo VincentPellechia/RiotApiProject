@@ -1,26 +1,38 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Participants = ({ match }) => {
   const { region } = useParams();
 
-  let team1 = match
+  const redirectToUserPage = (summonerName) => {
+    const userPageURL = `/user/${region}/${summonerName}`;
+    window.location.href = userPageURL;
+  };
+
+  const team1 = match
     .filter((x) => x.team_id === 100)
     .map((player) => (
       <li key={player.participant_id}>
-        <Link to={"/user/" + region + "/" + player.summoner_name}>
+        <span
+          onClick={() => redirectToUserPage(player.summoner_name)}
+          style={{ cursor: "pointer" }}
+        >
           {player.summoner_name}
-        </Link>
+          {player.champion_name}
+        </span>
       </li>
     ));
 
-  let team2 = match
+  const team2 = match
     .filter((x) => x.team_id === 200)
     .map((player) => (
       <li key={player.participant_id}>
-        <Link to={"/user/" + region + "/" + player.summoner_name}>
+        <span
+          onClick={() => redirectToUserPage(player.summoner_name)}
+          style={{ cursor: "pointer" }}
+        >
           {player.summoner_name}
-        </Link>
+        </span>
       </li>
     ));
 

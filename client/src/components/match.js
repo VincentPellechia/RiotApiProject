@@ -13,7 +13,6 @@ const Match = ({ userId, match }) => {
     return <div>Loading Match...</div>;
   }
   //This is the matchInfo
-  console.log(match.find((info) => info.puuid === userId));
   const matchInfo = match.find((info) => info.puuid === userId);
   const formattedDuration = formatMatchDuration(matchInfo.match_duration);
   const backgroundColor = getBackgroundColor(matchInfo.win);
