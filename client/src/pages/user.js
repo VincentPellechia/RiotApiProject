@@ -4,6 +4,7 @@ import Rank from "../components/rank";
 import { useParams } from "react-router-dom";
 import * as userService from "../services/user.js";
 import * as matchesService from "../services/matches.js";
+import "../styling/userPage.css";
 
 const UserPage = () => {
   const { region, userName } = useParams();
@@ -87,11 +88,11 @@ const UserPage = () => {
   }, [region, user]);
 
   return (
-    <div>
+    <div className="userPage">
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div>
+        <React.Fragment>
           {user && <Rank summonerId={user.id} region={region} />}
           <button onClick={fetchMatchesManually}>Fetch Matches</button>
           {loadingMatches ? (
@@ -107,7 +108,7 @@ const UserPage = () => {
               )}
             </React.Fragment>
           )}
-        </div>
+        </React.Fragment>
       )}
     </div>
   );

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import User from "./pages/user";
 import Home from "./pages/home";
 import UserSearchForm from "./components/userSearchForm"; // Import the new component
-import "./App.css";
+import "./styling/App.css";
 
 function App() {
   return (
