@@ -11,6 +11,7 @@ const getMatchesFromDatabase = async (userId, region) => {
         INNER JOIN participant_stats ON participants.participant_id = participant_stats.participant_id
         where participants.puuid = $1
         and matches.match_region = $2
+        order by matches.match_date
         `,
     [userId, region] // Use parameterized query to prevent SQL injection
   );
