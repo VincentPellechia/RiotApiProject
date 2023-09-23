@@ -21,3 +21,14 @@ export const fetchRank = async (region, userId) => {
     throw error;
   }
 };
+
+export const fetchChampionData = async (region, userId) => {
+  try {
+    const response = await api.fetchChampionData(region, userId);
+    return response;
+    // Process and return user data
+  } catch (error) {
+    console.error("Error fetching user matches:", error);
+    throw error;
+  }
+};

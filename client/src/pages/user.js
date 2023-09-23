@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MatchList from "../components/matchList";
 import Rank from "../components/rank";
+import Champions from "../components/champions";
 import { useParams } from "react-router-dom";
 import * as userService from "../services/user.js";
 import * as matchesService from "../services/matches.js";
@@ -93,19 +94,28 @@ const UserPage = () => {
         <p>Loading...</p>
       ) : (
         <React.Fragment>
-          {user && <Rank summonerId={user.id} region={region} />}
-          <button onClick={fetchMatchesManually}>Fetch Matches</button>
+          <div>
+            {user && <Rank summonerId={user.id} region={region} />}
+            <button onClick={fetchMatchesManually}>Fetch Matches</button>
+          </div>
           {loadingMatches ? (
             <p>Loading Matches ...</p>
           ) : (
             <React.Fragment>
-              {matchInfoList && (
-                <MatchList
-                  userId={userId}
-                  matches={matchInfoList}
-                  loading={loading}
-                />
-              )}
+              <div className="champions">
+                {/* Champions component */}
+                <Champions user={user} region={region} />
+              </div>
+              <div className="matchList">
+                {/* MatchList component */}
+                {matchInfoList && (
+                  <MatchList
+                    userId={userId}
+                    matches={matchInfoList}
+                    loading={loading}
+                  />
+                )}
+              </div>
             </React.Fragment>
           )}
         </React.Fragment>

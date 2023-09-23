@@ -138,3 +138,28 @@ export const fetchRank = async (region, summonerId) => {
     console.error("Error fetching rank data:", error);
   }
 };
+
+export const fetchChampionData = async (region, summonerId) => {
+  try {
+    const response = await fetch(`http://localhost:8000/user/getChampions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ region, summonerId }), // Use destructuring here
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user");
+    }
+
+    const data = await response.json();
+    console.log(
+      "🚀 ~ file: api.js:160 ~ fetchChampionData ~ data.rankInfo:",
+      data.rankInfo
+    );
+    return data.rankInfo;
+  } catch (error) {
+    console.error("Error fetching rank data:", error);
+  }
+};

@@ -27,3 +27,11 @@ export const formatMatchDuration = (duration) => {
 
 // Helper function to determine the background color based on win/loss
 export const getBackgroundColor = (isWin) => (isWin ? "green" : "red");
+
+export const formatAverage = (value, decimalPlaces = 1) => {
+  const floatValue = parseFloat(value);
+  if (isNaN(floatValue)) {
+    return ""; // Handle invalid input gracefully
+  }
+  return floatValue.toFixed(decimalPlaces);
+};
