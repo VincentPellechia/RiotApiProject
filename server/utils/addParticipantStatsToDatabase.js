@@ -5,22 +5,30 @@ const addParticipantStatsToDatabase = async (
 ) => {
   try {
     const roleLaneMapping = {
-      MID_LANE: {
+      SOLO: {
+        TOP: "TOP",
+        MIDDLE: "MIDDLE",
+      },
+      MIDDLE: {
         SOLO: "MIDDLE",
       },
-      TOP_LANE: {
+      TOP: {
         SOLO: "TOP",
+      },
+      NONE: {
+        JUNGLE: "JUNGLE",
       },
       JUNGLE: {
         NONE: "JUNGLE",
       },
-      BOT_LANE: {
-        DUO_CARRY: "BOTTOM",
-        DUO_SUPPORT: "UTILITY",
+      BOTTOM: {
+        CARRY: "BOTTOM",
+        SUPPORT: "UTILITY",
       },
     };
 
-    const role = roleLaneMapping[statsData.role]?.[statsData.lane] || "UNKNOWN";
+    const role = roleLaneMapping[statsData.lane]?.[statsData.role] || "UNKNOWN";
+
     // SQL query to insert participant stats data into participant_stats table
     const queryText = `INSERT INTO participant_stats (participant_id, champion_name,win,kills,assists,deaths,role,damage_dealt,damage_taken,gold_earned,champion_level,
                         item0,item1,item2,item3,item4,item5,item6,total_minions_killed,summoner1_id,summoner2_id,largest_multi_kill) 
