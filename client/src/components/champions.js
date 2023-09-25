@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import img from "../assets/temp.png";
 import * as userService from "../services/user.js"; // Import the userService
-import { formatAverage } from "../utils/helpers.js";
+import { formatAverage, getAverage } from "../utils/helpers.js";
 
 const Champions = ({ user, region }) => {
   const [championData, setChampionData] = useState([]);
@@ -49,6 +49,7 @@ const Champions = ({ user, region }) => {
               </div>
               <div>
                 <p>Champion: {champion.champion_name}</p>
+                <p>{getAverage(champion.wins, champion.losses)}%</p>
                 <p>Wins: {champion.wins}</p>
                 <p>Loses: {champion.losses}</p>
                 <p>Kills: {formatAverage(champion.average_kills)}</p>

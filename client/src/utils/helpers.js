@@ -35,3 +35,15 @@ export const formatAverage = (value, decimalPlaces = 1) => {
   }
   return floatValue.toFixed(decimalPlaces);
 };
+
+export const getAverage = (wins, losses, decimalPlaces = 2) => {
+  console.log("🚀 ~ file: helpers.js:44 ~ getAverage ~ value:", wins + losses);
+  const parseWin = parseInt(wins);
+  const parseLoss = parseInt(losses);
+  if (isNaN(parseLoss) || isNaN(parseWin)) {
+    return ""; // Handle invalid input gracefully
+  }
+
+  const avgValue = (parseWin / (parseWin + parseLoss)) * 100;
+  return avgValue.toFixed(decimalPlaces);
+};
