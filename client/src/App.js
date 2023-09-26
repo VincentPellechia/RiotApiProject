@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import User from "./pages/user";
+import User from "./pages/userPage";
 import Home from "./pages/home";
 import UserSearchForm from "./components/userSearchForm"; // Import the new component
 import "./styling/App.css";
