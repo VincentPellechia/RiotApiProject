@@ -33,7 +33,7 @@ const Champions = ({ user, region }) => {
   }, [region, user]);
 
   return (
-    <div className="champions-container">
+    <React.Fragment>
       {loadingChampions ? (
         <p>Loading Champions...</p>
       ) : (
@@ -71,7 +71,7 @@ const Champions = ({ user, region }) => {
           ))}
         </ul>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

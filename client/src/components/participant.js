@@ -1,7 +1,6 @@
 import React from "react";
 
 const Participant = ({ player, region }) => {
-  console.log(player);
   const redirectToUserPage = () => {
     const userPageURL = `/user/${region}/${player.summoner_name}`;
     window.location.href = userPageURL;

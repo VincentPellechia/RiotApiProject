@@ -37,8 +37,9 @@ const Match = ({ userId, match }) => {
         <div className="match-summary">
           <div className="match-info">
             <p>{formatGameType(matchInfo.match_mode)}</p>
-            <p>{formattedDuration}</p>
             <p>{formatMatchDate(matchInfo.match_date)}</p>
+            <p>{matchInfo.win ? "Victory" : "Defeat"}</p>
+            <p>{formattedDuration}</p>
           </div>
           <div className="match-details">
             <p>{matchInfo.champion_name}</p>

@@ -8,8 +8,28 @@
   justify-content: space-around;
 }
 
+.match-info {
+  width: 30%;
+  text-align: left;
+}
+
+.match-details {
+  width: 60%; /* 60% of the userPage width */
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.match-expanded {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
 .participants ul {
   list-style-type: none;
+  padding: 0;
   font-size: 14px;
   display: flex;
+  justify-content: space-around;
+  margin: 10px;
+  border-radius: 20px;
 }

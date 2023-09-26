@@ -104,11 +104,11 @@ const UserPage = () => {
             <p>Loading Matches ...</p>
           ) : (
             <div className="user-games-container">
-              <div className="champions">
+              <div className="champions-container">
                 {/* Champions component */}
                 <Champions user={user} region={region} />
               </div>
-              <div className="matchList">
+              <div className="match-list-container">
                 {/* MatchList component */}
                 {matchInfoList && (
                   <MatchList
