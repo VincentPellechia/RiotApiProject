@@ -1,0 +1,13 @@
+.rank-container {
+  display: flex;
+  justify-content: center;
+}
+
+.rank-image {
+  margin: 10px;
+  border-radius: 50%;
+}
+
+.rank-data {
+  margin: 10px;
+}
