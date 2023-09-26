@@ -1,0 +1,44 @@
+.champions-list {
+  list-style-type: none;
+  font-size: 14px;
+}
+
+.champions-item {
+  display: flex;
+}
+
+.champions-image {
+  border-radius: 50%;
+}
+
+.champions-details {
+  display: inherit;
+  margin: 5px;
+}
+
+.champions-details div {
+  margin: 0 10px 0 10px;
+}
+
+.champions-details p {
+  margin: 0;
+}
+
+.champion-name {
+  text-align: left;
+  width: 70px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.champion-games {
+  font-size: 12px;
+  font-weight: 500;
+  width: 50px;
+}
+
+.champion-kda {
+  font-size: 12px;
+  font-weight: 500;
+  width: 70px;
+}
