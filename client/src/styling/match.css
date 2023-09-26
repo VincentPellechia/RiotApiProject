@@ -1,0 +1,15 @@
+.match {
+  margin-bottom: 10px;
+  border-radius: 20px;
+}
+
+.match-summary {
+  display: flex;
+  justify-content: space-around;
+}
+
+.participants ul {
+  list-style-type: none;
+  font-size: 14px;
+  display: flex;
+}

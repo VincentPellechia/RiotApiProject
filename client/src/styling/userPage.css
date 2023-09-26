@@ -1,3 +1,30 @@
-.userPage {
-  display: block;
+.user-games-container {
+  display: flex;
+  justify-content: space-between; /* Space between champions and matchList */
+  padding: 20px; /* Margins around the userPage */
+}
+
+.rank-fetch {
+  /* Adjust width and other styles as needed */
+  width: 100%; /* 30% of the userPage width */
+}
+
+.champions {
+  /* Adjust width and other styles as needed */
+  width: 35%; /* 30% of the userPage width */
+}
+
+.matchList {
+  /* Adjust width and other styles as needed */
+  width: 60%; /* 60% of the userPage width */
+}
+
+.fetch-matches {
+  background-color: cornflowerblue;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  width: 100px;
+  height: 50px;
+  font-size: 17px;
 }

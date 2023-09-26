@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import Participants from "./participants.js";
-import { formatMatchDuration, getBackgroundColor } from "../utils/helpers.js";
+import {
+  formatMatchDuration,
+  getBackgroundColor,
+  formatGameType,
+  formatMatchDate,
+  formatAverage,
+  getLightBackgroundColor,
+} from "../utils/helpers.js";
+import "../styling/match.css";
 
 const Match = ({ userId, match }) => {
   const [expanded, setExpanded] = useState(false);
@@ -16,6 +24,7 @@ const Match = ({ userId, match }) => {
   const matchInfo = match.find((info) => info.puuid === userId);
   const formattedDuration = formatMatchDuration(matchInfo.match_duration);
   const backgroundColor = getBackgroundColor(matchInfo.win);
+  const lightBackgroundColor = getLightBackgroundColor(matchInfo.win);
 
   return (
     matchInfo && (
@@ -26,21 +35,43 @@ const Match = ({ userId, match }) => {
         onClick={toggleExpanded}
       >
         <div className="match-summary">
-          <h4>Game Mode: {matchInfo.match_mode}</h4>
-          <h4>
-            {matchInfo.kills}/{matchInfo.deaths}/{matchInfo.assists}
-          </h4>
-          <h4>Duration: {formattedDuration}</h4>
-          {matchInfo && <h4>Champion: {matchInfo.champion_name}</h4>}
+          <div className="match-info">
+            <p>{formatGameType(matchInfo.match_mode)}</p>
+            <p>{formattedDuration}</p>
+            <p>{formatMatchDate(matchInfo.match_date)}</p>
+          </div>
+          <div className="match-details">
+            <p>{matchInfo.champion_name}</p>
+            <p>
+              {matchInfo.kills}/{matchInfo.deaths}/{matchInfo.assists}
+            </p>
+            <p>
+              {formatAverage(
+                (matchInfo.kills + matchInfo.assists) / matchInfo.assists
+              )}{" "}
+              KDA
+            </p>
+            <p>{matchInfo.total_minions_killed} CS</p>
+            <p>Damage Dealt: {matchInfo.damage_dealt}</p>
+            <p>Damage Taken: {matchInfo.damage_taken}</p>
+            {/* Display additional match details */}
+          </div>
+
           {/* Display other basic match Information */}
         </div>
         {expanded && (
-          <div className="match-details">
-            <React.Fragment>
-              <h4>Damage dealt: {matchInfo.damage_dealt}</h4>
-              <Participants match={match} />
+          <div
+            className="match-expanded"
+            style={{ backgroundColor: lightBackgroundColor }}
+          >
+            <div className="match-detailssss">
+              <p>
+                Placeholder for more info here potentially***{" "}
+                {matchInfo.damage_dealt}
+              </p>
               {/* Display additional match details */}
-            </React.Fragment>
+            </div>
+            <Participants match={match} />
           </div>
         )}
       </div>
