@@ -154,10 +154,6 @@ export const fetchChampionData = async (region, summonerId) => {
     }
 
     const data = await response.json();
-    console.log(
-      "🚀 ~ file: api.js:160 ~ fetchChampionData ~ data.rankInfo:",
-      data.rankInfo
-    );
     return data.rankInfo;
   } catch (error) {
     console.error("Error fetching rank data:", error);
