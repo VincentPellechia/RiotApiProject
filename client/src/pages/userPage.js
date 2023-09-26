@@ -89,19 +89,21 @@ const UserPage = () => {
   }, [region, user]);
 
   return (
-    <div className="userPage">
+    <div className="user-page">
       {loading ? (
         <p>Loading...</p>
       ) : (
         <React.Fragment>
-          <div>
+          <div className="rank-fetch">
             {user && <Rank summonerId={user.id} region={region} />}
-            <button onClick={fetchMatchesManually}>Fetch Matches</button>
+            <button className="fetch-matches" onClick={fetchMatchesManually}>
+              Update
+            </button>
           </div>
           {loadingMatches ? (
             <p>Loading Matches ...</p>
           ) : (
-            <React.Fragment>
+            <div className="user-games-container">
               <div className="champions">
                 {/* Champions component */}
                 <Champions user={user} region={region} />
@@ -116,7 +118,7 @@ const UserPage = () => {
                   />
                 )}
               </div>
-            </React.Fragment>
+            </div>
           )}
         </React.Fragment>
       )}
