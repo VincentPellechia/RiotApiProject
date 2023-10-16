@@ -26,10 +26,27 @@
 
 .participants ul {
   list-style-type: none;
+  display: inline;
   padding: 0;
   font-size: 14px;
-  display: flex;
   justify-content: space-around;
   margin: 10px;
   border-radius: 20px;
+}
+
+.participants li {
+  display: flex;
+}
+
+.participants li div {
+  display: flex;
+}
+
+.participants li span {
+  width: 150px;
+}
+
+.participants p {
+  margin: 0;
+  width: 150px;
 }
